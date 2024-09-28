@@ -1,7 +1,7 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { useDndContext, type UniqueIdentifier } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Task, TaskCard } from "./TaskCard";
 import { cva } from "class-variance-authority";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -28,8 +28,16 @@ interface BoardColumnProps {
 }
 
 export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
+
+
+  const [taskss, setTasks]= useState(tasks)
+
+  useEffect(()=>{
+    setTasks(tasks)
+  }, [tasks])
+
   const tasksIds = useMemo(() => {
-    return tasks.map((task) => task.id);
+    return taskss?.map((task) => task._id);
   }, [tasks]);
 
   const {
@@ -68,6 +76,9 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
     }
   );
 
+
+
+  console.log(taskss)
   return (
     <Card
       ref={setNodeRef}
@@ -82,8 +93,8 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       <ScrollArea>
         <CardContent className="flex flex-grow flex-col gap-2 p-2">
           <SortableContext items={tasksIds}>
-            {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+            {taskss?.map((task: Task) => (
+              <TaskCard key={task._id} task={task} />
             ))}
           </SortableContext>
         </CardContent>
