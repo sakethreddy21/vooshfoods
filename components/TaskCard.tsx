@@ -8,13 +8,25 @@ import { GripVertical } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { ColumnId } from "./KabanBoard";
 
-export interface Task {
-  id: UniqueIdentifier;
-  columnId: ColumnId;
-  title:string,
-  date:string,
-  content: string;
+export enum ColumnID {
+  Todo = 1,
+  InProgress = 2,
+  Done = 3,
 }
+
+
+
+
+export interface Task {
+  columnID: ColumnID; // Ensure it's using the enum
+  createdAt: string;
+  description: string;
+  title: string;
+  updatedAt: string;
+  userID: string;
+  _id: string;
+}
+
 
 interface TaskCardProps {
   task: Task;
@@ -37,7 +49,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: task._id,
     data: {
       type: "Task",
       task,
@@ -82,11 +94,11 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
         
       </CardHeader>
       <CardContent className="px-3  pb-6 text-left whitespace-pre-wrap">
-        {task.content}
+        {task.description}
 
 
         <div className="pt-6 ">
-          Creadted at : {task.date}
+          Creadted at : {task.createdAt}
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end gap-x-2 text-white ">

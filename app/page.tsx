@@ -1,10 +1,16 @@
+"use client"
 import { Github } from "lucide-react";
 import "./globals.css";
 import { KanbanBoard } from "@/components/KabanBoard";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
 
 
 function App() {
+  const[userloggedin, setUserlogggedin]=useState(true)
+
+ 
   return (
     <>
   
@@ -15,20 +21,39 @@ function App() {
                 <Github className="fill-current h-full w-full" />
               </a>
             </Button>
-            <Button variant="link" asChild className="text-primary h-16 w-16">
-              
-            </Button>
-           <Button className="bg-red-500">
+            <div className="flex flex-row">
+              {!userloggedin ? (
+                <div className="flex flex-row gap-x-2">
+                <Button className="bg-red-500">
+              Logout
+             </Button>
+             <Button className="bg-red-500">
+              Logout
+             </Button>
+                </div>
+              ):(
+                <Button className="bg-red-500">
             Logout
            </Button>
+              )}
+              
+
+              
+            </div>
+            
+          
           </header>
 
-          
-          <main className="w-full h-full flex flex-col gap-6 pt-4">
+          {!userloggedin?(
+            <div>djjjj</div>
+          ):(
+            <main className="w-full h-full flex flex-col gap-6 pt-4">
            
             <KanbanBoard />
             
           </main>
+          )}
+          
          
         </div>
       
