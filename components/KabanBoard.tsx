@@ -24,7 +24,7 @@ import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./mutipleConatinersKeyboardPreset";
 import useLogin from '@/hooks/useLogin'
 import {decodeToken} from '@/lib/jwtdecode'
-import { DialogCloseButton } from "./AddTask";
+import { AddTaskModal } from "./AddTask";
 import useDeleteTask from "@/hooks/useDeleteTask";
 import { useUpdateTask } from "@/hooks/useUpdatetask";
 
@@ -63,12 +63,7 @@ const decodedToken = decodeToken(token);
     const userId: string = decodedToken?.userId || ''    // Use the userId in your tasks hook
     
     const [errors, setErrors] = useState(null);
-    const [taskID, setTaskID] = useState('');
-    const [description, setDescription] = useState('');
-    const [columnID, setColumnID] = useState<number | null>(null);
-  
-  
-    
+
  const { data, isLoading, isError } = useTasksByUserID(userId, true)
 const [tasks, setTasks] = useState<Task[]>([]); // Initialize as an empty array
 
@@ -156,6 +151,9 @@ function convertToDate(dateString: string): Date | 'Invalid Date' {
 
 const { deleteTask } = useDeleteTask();
 const { updateTask } = useUpdateTask();
+
+
+
 const handleAddTask = (newTask: Task) => {
   setTasks((prevTasks) => [...prevTasks, newTask]);
   
@@ -172,6 +170,31 @@ function deletetask(id:string){
 
   setTasks(newTasks)
 }
+
+const updatethetask = (updatedTask: Task) => {
+  if (!updatedTask._id || !updatedTask.title || !updatedTask.description || updatedTask.columnID === null) {
+    alert("Please fill all the fields!");
+    console.log('dhdhdh')
+    return;
+  }
+
+  // Update the task locally
+  const newTasks = tasks.map((task) =>
+    task._id === updatedTask._id
+      ? { ...task, title: updatedTask.title, description: updatedTask.description, columnID: updatedTask.columnID }
+      : task
+  );
+  setTasks(newTasks);
+console.log(updatedTask._id)
+
+  updateTask({
+    taskID: updatedTask._id,
+    title: updatedTask.title,
+    description: updatedTask.description,
+    columnID: updatedTask.columnID,
+  });
+}
+
 
 
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
@@ -329,7 +352,7 @@ if(isLoading){
       onDragOver={onDragOver}
     >
         <div className="px-20 flex flex-col">
-        <DialogCloseButton userId={userId} onAddTask={handleAddTask} />
+        <AddTaskModal userId={userId} onAddTask={handleAddTask} />
          <div className="border-2 border-slate-200 rounded-xl p-4 mt-2 flex flex-row justify-between">
             <div>
             search:
@@ -367,6 +390,7 @@ if(isLoading){
             columnId={col}
             userId={userId}
             deletetask={deletetask}
+            edittask={updatethetask}
             onAddTask={handleAddTask}
               key={col.id}
               column={col}
@@ -384,13 +408,14 @@ if(isLoading){
               userId={userId}
             onAddTask={handleAddTask}
                 isOverlay
+                edittask={updatethetask}
                 column={activeColumn}
                 tasks={tasks.filter(
                   (task) => task.columnID === activeColumn.id
                 )}
               />
             )}
-            {activeTask && <TaskCard task={activeTask} isOverlay   deletetask={deletetask}/>}
+            {activeTask && <TaskCard task={activeTask} edittask={updatethetask} isOverlay   deletetask={deletetask}/>}
           </DragOverlay>, 
           document.body
         )}

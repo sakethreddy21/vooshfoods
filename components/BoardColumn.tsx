@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { GripVertical } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { DialogCloseButton } from "./AddTask";
+import { AddTaskModal } from "./AddTask";
 
 export interface Column {
   id: UniqueIdentifier;
@@ -30,10 +30,11 @@ interface BoardColumnProps {
   onAddTask: any;
   columnId?:any
   deletetask?:any
+  edittask?:any
 
 }
 
-export function BoardColumn({ column, tasks, isOverlay,userId, onAddTask, columnId, deletetask }: BoardColumnProps) {
+export function BoardColumn({ column, tasks, isOverlay,userId, onAddTask, columnId, deletetask, edittask }: BoardColumnProps) {
 
 
   const [taskss, setTasks]= useState(tasks)
@@ -102,9 +103,9 @@ export function BoardColumn({ column, tasks, isOverlay,userId, onAddTask, column
         <CardContent className="flex flex-grow flex-col gap-2 p-2">
           {taskss.length==0? (
             
-            <DialogCloseButton userId={userId} onAddTask={onAddTask} columnId={columnId.id} />):( <SortableContext items={tasksIds}>
+            <AddTaskModal userId={userId} onAddTask={onAddTask} columnId={columnId.id} />):( <SortableContext items={tasksIds}>
             {taskss?.map((task: Task) => (
-              <TaskCard key={task._id} task={task} deletetask={deletetask}/>
+              <TaskCard key={task._id} task={task} deletetask={deletetask} edittask={edittask}/>
             ))}
           </SortableContext>)}
          

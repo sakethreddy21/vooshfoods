@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { Grip } from "lucide-react";
+import { EditTaskModal } from "./EditTask";
 
 export enum ColumnID {
   Todo = 1,
@@ -33,6 +34,7 @@ interface TaskCardProps {
   task: Task;
   isOverlay?: boolean;
   deletetask?:any
+  edittask?:any
 }
 
 export type TaskType = "Task";
@@ -43,7 +45,7 @@ export interface TaskDragData {
 }
 
 
-export function TaskCard({ task, isOverlay , deletetask}: TaskCardProps) {
+export function TaskCard({ task, isOverlay , deletetask, edittask}: TaskCardProps) {
   const {
     setNodeRef,
     attributes,
@@ -102,8 +104,8 @@ const handleDlete=()=>{
         </div>
       </CardContent>
       <CardFooter className="flex flex-row justify-end gap-x-2 text-white">
-        <button className="bg-red-500 rounded-xl p-2 px-4 z-[99999]" onClick={()=>deletetask(task._id)}>Delete</button>
-        <button className="bg-blue-500 rounded-xl p-2">Edit</button>
+        <button className="bg-red-500 rounded-xl p-2 px-4 " onClick={()=>deletetask(task._id)}>Delete</button>
+        <EditTaskModal task={task} edittask={edittask}/>
         <button className="bg-blue-700 rounded-xl p-2">View details</button>
       </CardFooter>
     </Card>

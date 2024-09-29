@@ -10,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import useCreateTask from "@/hooks/useAddtasks";
 import { useState } from "react";
 
@@ -22,7 +20,7 @@ interface AddboxProps {
     columnId?:number;
 }
 
-export function DialogCloseButton({ userId, onAddTask, columnId }: AddboxProps) {
+export function AddTaskModal({ userId, onAddTask, columnId }: AddboxProps) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [userID, setUserID] = useState(userId);
@@ -62,7 +60,7 @@ export function DialogCloseButton({ userId, onAddTask, columnId }: AddboxProps) 
                 <input
                   className="border-b-[1px] border-0 border-gray-500 p-4"
                   type="text"
-                  placeholder="Title"
+                  
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -72,26 +70,27 @@ export function DialogCloseButton({ userId, onAddTask, columnId }: AddboxProps) 
                 <div>Description</div>
                 <textarea
                   className="border-b-[1px] border-0 border-gray-500 p-4"
-                  placeholder="Description"
+                 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
                 />
               </div>
-              <DialogClose asChild>
-                <button type="submit" disabled={loading}>
-                  {loading ? 'Creating...' : 'Create Task'}
-                </button>
-              </DialogClose>
-            </form>
-          </div>
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
+              <div className="flex w-full mt-4">
+                <div className="flex w-full justify-between">
+                <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Close
               </Button>
             </DialogClose>
-          </DialogFooter>
+                <button type="submit" disabled={loading} className="flex bg-blue-300 w-[130px] p-2 justify-center items-center rounded-xl">
+                  {loading ? 'Creating...' : 'Create Task'}
+                </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
         </DialogContent>
       </Dialog>
     );
