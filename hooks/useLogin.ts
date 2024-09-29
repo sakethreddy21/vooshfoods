@@ -1,25 +1,39 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export const useLogin = () => {
+const useLogin = () => {
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
-  const BASE_URL= process.env.VooshBackend
 
-  const login = async (credentials: { email: string; password: string }) => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await axios.post(`${BASE_URL}/login`, credentials);
-      setUser(response.data.user);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Invalid credentials');
-    } finally {
+      const response = await axios.post(`https://vooshfoodsbackend.vercel.app/users/login`, { email, password });
+      const { token } = response.data;
+
+      sessionStorage.setItem('token', token);
+
       setLoading(false);
+      return true;
+    } catch (err) {
+      setError('Invalid email or password');
+      setLoading(false);
+      return false;
     }
   };
 
-  return { login, loading, error, user };
+  const logout = () => {
+    sessionStorage.removeItem('token');
+  };
+
+  const getToken = (): string | null => {
+    return sessionStorage.getItem('token');
+  };
+
+  return { login, logout, getToken, loading, error };
 };
+
+export default useLogin;
