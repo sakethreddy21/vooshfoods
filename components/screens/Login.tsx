@@ -47,30 +47,7 @@ const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
     }
   };
 
-  const googleAuth = () => {
-		window.open(
-			`https://vooshfoodsbackend.vercel.app/auth/google/callback`,
-			"_self"
-		)
 
-	};
-
- const handleGoggleauth=()=>{
-  googleAuth()
-
- }
-
- 
- const token = searchParams.get('token') || ''
-
- useEffect(()=>{
-
-  sessionStorage.setItem('token', token);
-  if (token.length!=0) {
-    router.push('/')
-    onUserLogin()
-  }
- }, [googleAuth])
 
  
   return (
@@ -106,10 +83,7 @@ const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
             {error && <p className='text-red-500'>{error}</p>}
           </form>
 
-          <button className='w-full' onClick={handleGoggleauth}>
-						<img src="./images/google.png" alt="google icon" />
-						<span>Sing in with Google</span>
-					</button>
+         
 
         </div>
       </div>
