@@ -3,14 +3,20 @@ import { Github } from "lucide-react";
 import "./globals.css";
 import { KanbanBoard } from "@/components/KabanBoard";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "@/components/screens/Login";
 import useLogin from "@/hooks/useLogin";
 import Register from "@/components/screens/Register";
 
+
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.token);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isLoginScreen, setIsLoginScreen] = useState(true); // Use a single state to manage login/register screens
+
+
+  useEffect(()=>{
+    setIsLoggedIn(window.sessionStorage.token)
+  }, [])
 
   const { logout } = useLogin();
 
@@ -41,7 +47,7 @@ function App() {
     }
 
     return (
-      <>
+      <div>
         <Button
           className={`${!isLoginScreen ? "bg-red-500 hover:bg-red-500" : "bg-gray-600 hover:bg-gray-600"}`}
           onClick={toggleScreen}
@@ -54,7 +60,7 @@ function App() {
         >
           Register
         </Button>
-      </>
+      </div>
     );
   };
 
