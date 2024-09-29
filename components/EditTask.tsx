@@ -85,12 +85,15 @@ export function EditTaskModal({ task, edittask }: EditModalProps) {
                   Cancel
                 </Button>
               </DialogClose>
+              <DialogClose asChild>
               <button
                 type="submit"
                 className="flex bg-blue-300 w-[130px] p-2 justify-center items-center rounded-xl"
               >
                 Save
               </button>
+              </DialogClose>
+          
             </div>
           </form>
         </div>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
 import { Grip } from "lucide-react";
 import { EditTaskModal } from "./EditTask";
+import { ViewDetailModal } from "./ViewDetails";
 
 export enum ColumnID {
   Todo = 1,
@@ -106,7 +107,7 @@ const handleDlete=()=>{
       <CardFooter className="flex flex-row justify-end gap-x-2 text-white">
         <button className="bg-red-500 rounded-xl p-2 px-4 " onClick={()=>deletetask(task._id)}>Delete</button>
         <EditTaskModal task={task} edittask={edittask}/>
-        <button className="bg-blue-700 rounded-xl p-2">View details</button>
+        <ViewDetailModal task={task}/>
       </CardFooter>
     </Card>
   );

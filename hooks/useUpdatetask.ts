@@ -29,7 +29,7 @@ export const useUpdateTask = () => {
     setError(null);
 
     try {
-      const res = await axios.put<UpdateTaskResponse>(`http://localhost:3000/tasks/${taskID}`, {
+      const res = await axios.put<UpdateTaskResponse>(`https://vooshfoodsbackend.vercel.app/tasks/${taskID}`, {
         title,
         description,
         columnID,
