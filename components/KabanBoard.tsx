@@ -26,6 +26,7 @@ import useLogin from '@/hooks/useLogin'
 import {decodeToken} from '@/lib/jwtdecode'
 import { DialogCloseButton } from "./AddTask";
 import useDeleteTask from "@/hooks/useDeleteTask";
+import { useUpdateTask } from "@/hooks/useUpdatetask";
 
 
 const defaultCols = [
@@ -62,7 +63,11 @@ const decodedToken = decodeToken(token);
     const userId: string = decodedToken?.userId || ''    // Use the userId in your tasks hook
     
     const [errors, setErrors] = useState(null);
-
+    const [taskID, setTaskID] = useState('');
+    const [description, setDescription] = useState('');
+    const [columnID, setColumnID] = useState<number | null>(null);
+  
+  
     
  const { data, isLoading, isError } = useTasksByUserID(userId, true)
 const [tasks, setTasks] = useState<Task[]>([]); // Initialize as an empty array
@@ -149,11 +154,14 @@ function convertToDate(dateString: string): Date | 'Invalid Date' {
     });
 }, [filteredTasks, selectedOption]);
 
-const { deleteTask, loading, error, success } = useDeleteTask();
+const { deleteTask } = useDeleteTask();
+const { updateTask } = useUpdateTask();
 const handleAddTask = (newTask: Task) => {
   setTasks((prevTasks) => [...prevTasks, newTask]);
   
 };
+
+;
 
 function deletetask(id:string){
 
@@ -214,11 +222,25 @@ function deletetask(id:string){
         active.data.current?.type === "Task" &&
         over.data.current?.type === "Task"
       ) {
+        const activeTaskId = active.id;  // Task ID
+        const overColumnId = over.data.current.task.columnID;
         const { tasksInColumn, taskPosition, column } = getDraggingTaskData(
           over.id,
           over.data.current.task.columnID
         );
         if (over.data.current.task.columnID !== pickedUpTaskColumn.current) {
+          console.log(`Task ID: ${activeTaskId} was dropped into column ID: ${overColumnId} in position ${
+            taskPosition + 1
+          } of ${tasksInColumn.length}`);
+          updateTask( { taskID: active.id,
+              // Use proper property names
+              title: active.data.current.task.title,
+            description: active.data.current.task.description,
+            columnID: overColumnId})
+
+          console.log(`Task ID: ${active.data.current.task._id} was dropped into position ${
+            taskPosition + 1
+          } of ${tasksInColumn.length} in column ID: ${overColumnId}`);
           return `Task ${
             active.data.current.task.description
           } was moved over column ${column?.title} in position ${
@@ -232,6 +254,7 @@ function deletetask(id:string){
     },
     onDragEnd({ active, over }) {
       if (!hasDraggableData(active) || !hasDraggableData(over)) {
+        
         pickedUpTaskColumn.current = ColumnID.Done;
         return;
       }
@@ -240,7 +263,11 @@ function deletetask(id:string){
         over.data.current?.type === "Column"
       ) {
         const overColumnPosition = columnsId.findIndex((id) => id === over.id);
-
+        console.log(`Column ${
+          active.data.current.column.title
+        } was dropped into position ${overColumnPosition + 1} of ${
+          columnsId.length
+        }`)
         return `Column ${
           active.data.current.column.title
         } was dropped into position ${overColumnPosition + 1} of ${
@@ -255,10 +282,19 @@ function deletetask(id:string){
           over.data.current.task.columnID
         );
         if (over.data.current.task.columnID !== pickedUpTaskColumn.current) {
+
+
+          console.log(`Task was dropped into column ${column?.title} in position ${
+            taskPosition + 1
+          } of ${tasksInColumn.length}`)
           return `Task was dropped into column ${column?.title} in position ${
             taskPosition + 1
           } of ${tasksInColumn.length}`;
         }
+
+        console.log(`Task was dropped into position ${taskPosition + 1} of ${
+          tasksInColumn.length
+        } in column ${column?.title}`)
         return `Task was dropped into position ${taskPosition + 1} of ${
           tasksInColumn.length
         } in column ${column?.title}`;
@@ -398,7 +434,7 @@ if(isLoading){
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
 
       const overColumnIndex = columns.findIndex((col) => col.id === overId);
-
+console.log(overId)
       return arrayMove(columns, activeColumnIndex, overColumnIndex);
     });
   }
@@ -434,10 +470,14 @@ if(isLoading){
           overTask &&
           activeTask.columnID !== overTask.columnID
         ) {
+
+          console.log(
+            `Task "${activeTask}" was moved to column "${overTask}"`
+          );
           activeTask.columnID = overTask.columnID;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
-
+console.log(activeIndex, overIndex)
         return arrayMove(tasks, activeIndex, overIndex);
       });
     }
