@@ -5,7 +5,6 @@ export const useRegister = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const BASE_URL= process.env.VooshBackend
 
   const register = async (userData: {
     firstName: string;
@@ -19,7 +18,7 @@ export const useRegister = () => {
     setSuccess(false);
     
     try {
-      const response = await axios.post(`${BASE_URL}/register`, userData);
+      const response = await axios.post(`https://vooshfoodsbackend.vercel.app/users/register`, userData);
       setSuccess(true);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Something went wrong');

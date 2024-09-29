@@ -22,6 +22,8 @@ import { type Task,ColumnID, TaskCard } from "./TaskCard";
 import type { Column } from "./BoardColumn";
 import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./mutipleConatinersKeyboardPreset";
+import useLogin from '@/hooks/useLogin'
+import {decodeToken} from '@/lib/jwtdecode'
 
 
 const defaultCols = [
@@ -43,19 +45,23 @@ export type ColumnId = (typeof defaultCols)[number]["id"];
 
 
 export function KanbanBoard() {
-
+        
+const {getToken}= useLogin()
   
+const [token, setToken]=useState( getToken() || '') 
 
+const decodedToken = decodeToken(token);
 
-  const { tasks: taksss, isLoading, isError } = useTasksByUserID('66f701c0178d17921b503a27', true) as { tasks: Task[]; isLoading: boolean; isError: boolean };
-
+    const userId: string = decodedToken?.userId || ''    // Use the userId in your tasks hook
+    
+ const { data, isLoading, isError } = useTasksByUserID(userId, true)
 const [tasks, setTasks] = useState<Task[]>([]); // Initialize as an empty array
 
 useEffect(() => {
-  if (taksss) {
-    setTasks(taksss);
+  if (data) {
+    setTasks(data);
   }
-}, [taksss]);
+}, [data, token]);
 
 
   const [columns, setColumns] = useState<Column[]>(defaultCols);
@@ -130,7 +136,6 @@ function convertToDate(dateString: string): Date | 'Invalid Date' {
     });
 }, [filteredTasks, selectedOption]);
 
-console.log(sortedTasks)
 
 
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
@@ -254,7 +259,7 @@ if (isError){
   )
 }
 
-
+console.log(tasks)
   return (
     <DndContext
       accessibility={{
@@ -297,19 +302,19 @@ if (isError){
          </div>
         </div>
 
-        
-        <BoardContainer>
+        {tasks.length!=0 &&  <BoardContainer>
         <SortableContext items={columnsId}>
          
-          {tasks && columns.map((col) => (
+          {tasks.length !=0  && columns.map((col) => (
             <BoardColumn
               key={col.id}
               column={col}
-              tasks={sortedTasks?.filter((task) => task.columnID === col.id) }
+              tasks={ sortedTasks?.filter((task) => task.columnID === col.id) }
             />
           ))}
         </SortableContext>
-      </BoardContainer>
+      </BoardContainer>}
+       
 
       {typeof window !== "undefined" &&
         createPortal(
