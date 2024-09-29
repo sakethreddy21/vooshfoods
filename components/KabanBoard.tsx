@@ -24,6 +24,8 @@ import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./mutipleConatinersKeyboardPreset";
 import useLogin from '@/hooks/useLogin'
 import {decodeToken} from '@/lib/jwtdecode'
+import { DialogCloseButton } from "./AddTask";
+import useDeleteTask from "@/hooks/useDeleteTask";
 
 
 const defaultCols = [
@@ -58,7 +60,7 @@ useEffect(()=>{
 const decodedToken = decodeToken(token);
 
     const userId: string = decodedToken?.userId || ''    // Use the userId in your tasks hook
-
+    
     const [errors, setErrors] = useState(null);
 
     
@@ -147,6 +149,21 @@ function convertToDate(dateString: string): Date | 'Invalid Date' {
     });
 }, [filteredTasks, selectedOption]);
 
+const { deleteTask, loading, error, success } = useDeleteTask();
+const handleAddTask = (newTask: Task) => {
+  setTasks((prevTasks) => [...prevTasks, newTask]);
+  
+};
+
+function deletetask(id:string){
+
+  console.log('djdjcd')
+
+  const newTasks= tasks.filter((task)=>task._id!==id)
+  deleteTask(id);
+
+  setTasks(newTasks)
+}
 
 
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
@@ -264,7 +281,7 @@ if(isLoading){
   )
 }
 
-console.log(tasks)
+
   return (
     <DndContext
       accessibility={{
@@ -276,8 +293,7 @@ console.log(tasks)
       onDragOver={onDragOver}
     >
         <div className="px-20 flex flex-col">
-         <button className="bg-blue-600 w-32  flex text-center justify-center px-4 p-2 text-white font-bold rounded-xl">Add Task</button>
-
+        <DialogCloseButton userId={userId} onAddTask={handleAddTask} />
          <div className="border-2 border-slate-200 rounded-xl p-4 mt-2 flex flex-row justify-between">
             <div>
             search:
@@ -312,6 +328,10 @@ console.log(tasks)
          
        { columns.map((col) => (
             <BoardColumn
+            columnId={col}
+            userId={userId}
+            deletetask={deletetask}
+            onAddTask={handleAddTask}
               key={col.id}
               column={col}
               tasks={ sortedTasks?.filter((task) => task.columnID === col.id) }
@@ -325,6 +345,8 @@ console.log(tasks)
           <DragOverlay>
             {activeColumn && tasks && (
               <BoardColumn
+              userId={userId}
+            onAddTask={handleAddTask}
                 isOverlay
                 column={activeColumn}
                 tasks={tasks.filter(
@@ -332,8 +354,8 @@ console.log(tasks)
                 )}
               />
             )}
-            {activeTask && <TaskCard task={activeTask} isOverlay />}
-          </DragOverlay>,
+            {activeTask && <TaskCard task={activeTask} isOverlay   deletetask={deletetask}/>}
+          </DragOverlay>, 
           document.body
         )}
     </DndContext>

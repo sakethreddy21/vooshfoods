@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { GripVertical } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { DialogCloseButton } from "./AddTask";
 
 export interface Column {
   id: UniqueIdentifier;
@@ -25,9 +26,14 @@ interface BoardColumnProps {
   column: Column;
   tasks: Task[];
   isOverlay?: boolean;
+  userId:any;
+  onAddTask: any;
+  columnId?:any
+  deletetask?:any
+
 }
 
-export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
+export function BoardColumn({ column, tasks, isOverlay,userId, onAddTask, columnId, deletetask }: BoardColumnProps) {
 
 
   const [taskss, setTasks]= useState(tasks)
@@ -39,6 +45,8 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   const tasksIds = useMemo(() => {
     return taskss?.map((task) => task._id);
   }, [tasks]);
+
+
 
   const {
     setNodeRef,
@@ -94,10 +102,9 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
         <CardContent className="flex flex-grow flex-col gap-2 p-2">
           {taskss.length==0? (
             
-            <div>there no tasks 
-            </div>):( <SortableContext items={tasksIds}>
+            <DialogCloseButton userId={userId} onAddTask={onAddTask} columnId={columnId.id} />):( <SortableContext items={tasksIds}>
             {taskss?.map((task: Task) => (
-              <TaskCard key={task._id} task={task} />
+              <TaskCard key={task._id} task={task} deletetask={deletetask}/>
             ))}
           </SortableContext>)}
          

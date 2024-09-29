@@ -4,9 +4,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cva } from "class-variance-authority";
-import { GripVertical } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { ColumnId } from "./KabanBoard";
+import { Grip } from "lucide-react";
 
 export enum ColumnID {
   Todo = 1,
@@ -27,10 +25,14 @@ export interface Task {
   _id: string;
 }
 
+export type AddTask = Omit<Task, 'createdAt' | 'updatedAt' | 'userID' | '_id'>;
+
+
 
 interface TaskCardProps {
   task: Task;
   isOverlay?: boolean;
+  deletetask?:any
 }
 
 export type TaskType = "Task";
@@ -40,7 +42,8 @@ export interface TaskDragData {
   task: Task;
 }
 
-export function TaskCard({ task, isOverlay }: TaskCardProps) {
+
+export function TaskCard({ task, isOverlay , deletetask}: TaskCardProps) {
   const {
     setNodeRef,
     attributes,
@@ -73,38 +76,35 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
     },
   });
 
+const handleDlete=()=>{
+  console.log('djjd')
+}
+
+
   return (
     <Card
-    {...attributes}
-          {...listeners}
-      ref={setNodeRef}
+    ref={setNodeRef}   
       style={style}
-      className={
-        
-        
-        variants({
-        dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-      })
-      + "bg-blue-100"}
+      className={`${variants({ dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined })} bg-blue-100`}
     >
-      <CardHeader className="px-3 py-3 space-between flex flex-row  relative text-[24px] font-bold" >
-        
-         {task.title}
-        
-        
+
+      
+      <CardHeader className="px-3 py-3 justify-between space-between flex flex-row relative text-[24px] font-bold">
+        {task.title}
+        <Grip {...attributes}
+      {...listeners}
+      />
       </CardHeader>
-      <CardContent className="px-3  pb-6 text-left whitespace-pre-wrap">
+      <CardContent className="px-3 pb-6 text-left whitespace-pre-wrap">
         {task.description}
-
-
-        <div className="pt-6 ">
-          Creadted at : {task.createdAt}
+        <div className="pt-6">
+          Created at: {task.createdAt}
         </div>
       </CardContent>
-      <CardFooter className="flex flex-row justify-end gap-x-2 text-white ">
-<button className="bg-red-500 rounded-xl p-2 px-4">Delete</button>
-<button className="bg-blue-500 rounded-xl p-2">Edit</button>
-<button className="bg-blue-700 rounded-xl p-2">View details</button>    
+      <CardFooter className="flex flex-row justify-end gap-x-2 text-white">
+        <button className="bg-red-500 rounded-xl p-2 px-4 z-[99999]" onClick={()=>deletetask(task._id)}>Delete</button>
+        <button className="bg-blue-500 rounded-xl p-2">Edit</button>
+        <button className="bg-blue-700 rounded-xl p-2">View details</button>
       </CardFooter>
     </Card>
   );
