@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import useLogin from '@/hooks/useLogin'; // Renaming useAuth to useLogin
-
+import { useSearchParams, useParams, useRouter } from 'next/navigation';
 interface FormField {
   name: keyof FormData;
   type: string;
@@ -26,6 +26,8 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const { login, loading, error } = useLogin(); // Using useAuth but naming it useLogin
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -45,8 +47,32 @@ const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
     }
   };
 
+  const googleAuth = () => {
+		window.open(
+			`https://vooshfoodsbackend.vercel.app/auth/google/callback`,
+			"_self"
+		)
 
+	};
 
+ const handleGoggleauth=()=>{
+  googleAuth()
+
+ }
+
+ 
+ const token = searchParams.get('token') || ''
+
+ useEffect(()=>{
+
+  sessionStorage.setItem('token', token);
+  if (token.length!=0) {
+    router.push('/')
+    onUserLogin()
+  }
+ }, [googleAuth])
+
+ 
   return (
     <div className='flex justify-center items-center p-10'>
       <div className='max-w-[450px] sm:w-[450px] shadow-sm p-4 rounded-xl'>
@@ -79,6 +105,12 @@ const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
 
             {error && <p className='text-red-500'>{error}</p>}
           </form>
+
+          <button className='w-full' onClick={handleGoggleauth}>
+						<img src="./images/google.png" alt="google icon" />
+						<span>Sing in with Google</span>
+					</button>
+
         </div>
       </div>
     </div>

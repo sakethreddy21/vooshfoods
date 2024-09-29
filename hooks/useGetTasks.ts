@@ -6,7 +6,7 @@ import axios from 'axios';
 export const useTasksByUserID = (userID: string, shouldFetch = true) => {
     const [data, setData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState<Error | null>(null);
+    const [isError, setIsError] = useState(null);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -17,7 +17,7 @@ export const useTasksByUserID = (userID: string, shouldFetch = true) => {
                     const response = await axios.get(`https://vooshfoodsbackend.vercel.app/tasks/user/${userID}`);
                     setData(response.data.tasks || []);
                 } catch (error) {
-                    setIsError(error as Error);
+                    setIsError(error as any);
                 } finally {
                     setIsLoading(false);
                 }

@@ -58,6 +58,9 @@ useEffect(()=>{
 const decodedToken = decodeToken(token);
 
     const userId: string = decodedToken?.userId || ''    // Use the userId in your tasks hook
+
+    const [errors, setErrors] = useState(null);
+
     
  const { data, isLoading, isError } = useTasksByUserID(userId, true)
 const [tasks, setTasks] = useState<Task[]>([]); // Initialize as an empty array
@@ -65,6 +68,9 @@ const [tasks, setTasks] = useState<Task[]>([]); // Initialize as an empty array
 useEffect(() => {
   if (data) {
     setTasks(data);
+  }
+  else{
+    setErrors(isError)
   }
 }, [data, token]);
 
@@ -257,12 +263,6 @@ if(isLoading){
     </>
   )
 }
-if (isError){
-  return(
-    <>
-    error</>
-  )
-}
 
 console.log(tasks)
   return (
@@ -307,10 +307,10 @@ console.log(tasks)
          </div>
         </div>
 
-        {tasks.length!=0 &&  <BoardContainer>
+        <BoardContainer>
         <SortableContext items={columnsId}>
          
-          {tasks.length !=0  && columns.map((col) => (
+       { columns.map((col) => (
             <BoardColumn
               key={col.id}
               column={col}
@@ -318,8 +318,7 @@ console.log(tasks)
             />
           ))}
         </SortableContext>
-      </BoardContainer>}
-       
+      </BoardContainer>
 
       {typeof window !== "undefined" &&
         createPortal(

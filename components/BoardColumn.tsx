@@ -78,7 +78,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
 
 
 
-  console.log(taskss)
+ 
   return (
     <Card
       ref={setNodeRef}
@@ -92,11 +92,15 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       </CardHeader>
       <ScrollArea>
         <CardContent className="flex flex-grow flex-col gap-2 p-2">
-          <SortableContext items={tasksIds}>
+          {taskss.length==0? (
+            
+            <div>there no tasks 
+            </div>):( <SortableContext items={tasksIds}>
             {taskss?.map((task: Task) => (
               <TaskCard key={task._id} task={task} />
             ))}
-          </SortableContext>
+          </SortableContext>)}
+         
         </CardContent>
       </ScrollArea>
     </Card>
