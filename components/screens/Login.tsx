@@ -36,12 +36,11 @@ const Login: React.FC<LoginProps> = ({ onLoginClick, onUserLogin }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(formData.email, formData.password); 
-    if(!error){
+    const success = await login(formData.email, formData.password);
 
-      
+    if (success) {
       onUserLogin()
     }
   };

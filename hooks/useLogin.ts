@@ -29,11 +29,8 @@ const useLogin = () => {
     sessionStorage.removeItem('token');
   };
 
-  const getToken = (): string | null => {
-    return sessionStorage.getItem('token');
-  };
-
-  return { login, logout, getToken, loading, error };
+ 
+  return { login, logout, loading, error };
 };
 
 export default useLogin;

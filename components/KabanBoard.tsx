@@ -46,9 +46,14 @@ export type ColumnId = (typeof defaultCols)[number]["id"];
 
 export function KanbanBoard() {
         
-const {getToken}= useLogin()
+
   
-const [token, setToken]=useState( getToken() || '') 
+const [token, setToken]=useState('') 
+useEffect(()=>{
+  setToken(window.sessionStorage.token)
+}, [])
+
+
 
 const decodedToken = decodeToken(token);
 
